@@ -101,6 +101,6 @@ body {
 }
 .icon {
     font-size: 20px;
-    line-height: 15px;
-    max-height: 15px;
+    color: #9ca1a3;
+    cursor: pointer;
 }

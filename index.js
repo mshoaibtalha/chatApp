@@ -74,8 +74,14 @@ function loadChatMessages(chatKey) {
          
           var  chat = data.val();
           var dateTime = chat.dateTime.split(",");
-          
-          
+          var msg = '';
+          if(chat.msg.indexOf('base64') !=-1) {
+              msg = `<img src='${chat.msg}' class="img-fluid" />`
+
+          }
+          else {
+             msg = chat.msg; 
+          }
           
           if (chat.userId !== currentUserKey) {
               messageDisplay += `<div class="row">
@@ -83,7 +89,7 @@ function loadChatMessages(chatKey) {
                                     <img class="chat-pic rounded-circle" src="images/pp.png" alt="image">
                                     </div>
                                     <div class="col-6 col-sm-6 col-md-6">
-                                        <p class="receive">${chat.msg}
+                                        <p class="receive">${msg}
                                         <span class="time float-right" title='${dateTime[0]}'>${dateTime[1]}</span>
                                         </p>
                                     </div>
@@ -96,7 +102,7 @@ function loadChatMessages(chatKey) {
             messageDisplay += `<div class="row justify-content-end">
                         
             <div class="col-6 col-sm-7 col-md-7 ">
-            <p class="sent float-right" >${chat.msg}
+            <p class="sent float-right" >${msg}
                 <span class="time float-right" title='${dateTime[0]}'>${dateTime[1]}</span>
             </p>
             </div>
@@ -169,6 +175,41 @@ document.getElementById('txtMessage').focus();
     
 }
 ///////////////////////////////////////////////
+////// send image////
+function ChooseImage() {
+    document.getElementById('imageFile').click();
+}
+function SendImage(event){
+    var file = event.files[0];
+
+    if (file.type.match("images.*")){
+        alert('Please Select image Only')
+
+    }
+    else {
+        var reader = new FileReader();
+        reader.addEventListener('load' , function() {
+            var chatMessage = {
+                userId:currentUserKey,
+                msg:reader.result,
+                dateTime: new Date().toLocaleString()
+            };
+            firebase.database().ref('chatMessages').child(chatKey).push(chatMessage , function(error) {
+                if (error) alert(error);
+                else {
+            
+            document.getElementById('txtMessage').value = '';
+            document.getElementById('txtMessage').focus();
+
+            }
+            });
+        } , false)
+        if(file) {
+            reader.readAsDataURL(file);
+        }
+    }
+
+}
 
 function loadChatList() {
     var db = firebase.database().ref('friend_List');
