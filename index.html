@@ -18,14 +18,34 @@
     <div class="container-fluid bg-white chatbox shadow-lg rounded">
        <div class="row h-100">
         <div class="col-md-4 pr-0 d-none d-md-block" id="side-1">
-            <div class="card h-100">
+            <div class="card">
                 <div class="card-header">
                     <div class="row">
                         <div class="col-1 col-sm-1 col-md-1 d-md-none">
                             <i class="fas fa-arrow-left d-md-none" style="font-size: 20px;cursor: pointer;" onclick="hideChatList()" ></i>
                         </div>
-                        <div class="col-9 col-sm-9 col-md-9">
+                        <div class="col-7 col-sm-7 col-md-7">
                             <img id="imgProfile" class="profile-pic rounded-circle" src="images/pp.png" alt="image">
+                        </div>
+                        <div class="col-2 col-sm-2 col-md-2">
+                        <a href="#" style="float: right;" data-toggle="modal" data-target="#modalNotificationList" onclick="populateNotifications()">
+                            <i class="fas fa-bell icon"></i>
+                            <span id="notification">0</span>
+                        </a>
+                        <div class="modal fade" id="modalNotificationList">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="card">
+                                        <div class="card-header">User requests
+                                            <span class="close" data-dismiss="modal" style="cursor: pointer;">&times;</span>
+                                        </div>
+                                        <ul class="list-group list-group-flush" id="lstNotification">
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                         <div class="col-2 col-sm-2 col-md-2">
                             <div class="dropleft">
@@ -33,32 +53,48 @@
                                     <i class="fas fa-ellipsis-v icon" style="cursor: pointer; float: right;" onclick="hideChatList()"></i>
                                 </span>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" id="linkNewChat" onclick="populateFriendList()" data-toggle="modal" data-target="#modalFriendList"> New Chat </a>
+                                    <a class="dropdown-item" id="ln" data-toggle="modal" data-target="#modalUserList" onclick="populateUserList()"> All Users</a>
+                                    <a class="dropdown-item" id="lnkNewChat" data-toggle="modal" data-target="#modalFriendList" onclick="populateFriendList()"> New Chat</a>
                                     <a class="dropdown-item" id="lnkSignIn" onclick="signIn()"> signIn</a>
                                     <a class="dropdown-item" id="lnkSignOut" style="display: none;" onclick="signOut()"> signOut</a>
                                 </div>
-                                <div class="modal fade" id="modalFriendList">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    Friend List
-                                                    <span class="close" data-dismiss="modal" style="cursor: pointer;">&times;</span>
+                                    <!-- initialting modal for New chat -->
+                                    <div class="modal fade" id="modalFriendList">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="card">
+                                                    <div class="card-header">Friend List
+                                                        <span class="close" data-dismiss="modal" style="cursor: pointer;">&times;</span>
+                                                    </div>
+                                                    <ul class="list-group list-group-flush" id="lstFriend">
+
+                                                    </ul>
                                                 </div>
-                                                
-                                                <ul class="list-group list-group-flush" id="lstFriend"></ul>
-                                        
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                        
+                                    <div class="modal fade" id="modalUserList">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="card">
+                                                    <div class="card-header">All Users list
+                                                        <span class="close" data-dismiss="modal" style="cursor: pointer;">&times;</span>
+                                                    </div>
+                                                    <ul class="list-group list-group-flush" id="lstUsers">
+
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                     </div>
                     
                 </div>
                 <ul class="list-group list-group-flush" id="lstChat">
+                    
+                    
                 </ul>
             </div>
         </div>
@@ -70,11 +106,11 @@
                             <i class="fas fa-list mt-2" style="cursor: pointer;" onclick="showChatList()" ></i>
                         </div>
                         <div class="col-2 col-sm-2 col-md-2 col-lg-1">
-                            <img src="images/pp.png" id="imageChat" alt="image" class="profile-pic rounded-circle">
+                            <img src="images/pp.png" id="imgChat" alt="image" class="profile-pic rounded-circle">
                         </div>
                         <div class="col-5 col-sm-5 col-md-5 col-lg-7">
-                            <div class="name" id="divChatName">Any name</div>
-                            <div class="under-name" id="divChatSeen">Last seen 06.01.2020</div>
+                            <div class="name" id="divChatName" >Any name</div>
+                            <div class="under-name" id="divChatSeen" >Last seen 06.01.2020</div>
                         </div>
                         <div class="col-4 col-sm-4 col-md-4 col-lg-3 icon">
                             <i class="fas fa-search"></i>
@@ -83,14 +119,14 @@
                                     <i class="fas fa-paperclip ml-4"></i>
                                 </span>
                                 <div class="dropdown-menu">
-                                    <a href="#" class="dropdown-item" onclick="ChooseImage()">
-                                        Image
-                                        <input type="file" id="imageFile" onchange="SendImage(this);" accept="image/*" style="display:none;" />
-                                    </a>
-                                    <a href="#" class="dropdown-item">Document</a>
-                                    <a href="#" class="dropdown-item">Camera</a>
-                                    <a href="#" class="dropdown-item">Video</a>
-                                </div>
+                                    <a class="dropdown-item" onclick="chooseImage()">
+                                         Image
+                                        <input type="file" id="imageFile" onchange="sendImage(this)" accept="image/*" style="display: none;">
+                                        </a>
+                                    <a class="dropdown-item"> Document</a>
+                                    <a class="dropdown-item"> Camera</a>
+                                    <a class="dropdown-item"> Video</a>
+                                </div>   
                             </span>
                             <i class="fas fa-ellipsis-v ml-4"></i>
                         </div>
@@ -98,19 +134,45 @@
                     
                 </div>
                 <div class="card-body" id="messages">
-                    
-                    
+                   
+        
                 </div>
                 <div class="card-footer">
+                    <div class="row" style="position: relative;">
+                        <div class="col-md-12" id="emoji" style="display: none;">
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#smiley" role="tab" aria-controls="home" aria-selected="true">
+                                      Smiley</a>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                                      Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">
+                                      Contact</a>
+                                </li>
+                              </ul>
+                              <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="smiley" role="tabpanel" aria-labelledby="home-tab">
+                                    <!-- <a href="#" onclick="getEmoji(this)">&#128540;</a> -->
+                                </div>
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
+                                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+                              </div>
+                        </div>
+                    </div>
                     <div class="row">
-                        <div class="col-2 col-md-1">
-                            <i class="far fa-grin fa-2x"></i>
+                        <div class="col-2 col-md-1" style="cursor: pointer;">
+                            <i class="far fa-grin fa-2x" onclick="showEmojiPanel()"></i>
                         </div>
                         <div class="col-8 col-md-10">
-                            <input id="txtMessage" type="text" placeholder="Type here" class="form-control form-rounded" >
+                            <input id="txtMessage" onkeyup="changeSendIcon(this)" onfocus="hideEmojiPanel()" type="text" placeholder="Type here" class="form-control form-rounded">
                         </div>
-                        <div class="col-2 col-md-1">
-                            <i class="fas fa-microphone fa-2x"></i>
+                        <div class="col-2 col-md-1" style="cursor: pointer;">
+                            <i id="audio" onclick="record(this)" class="fas fa-microphone fa-2x"></i>
+                            <i id="send" class="fas fa-paper-plane fa-2x" style="display: none;"></i>
                         </div>
                     </div>
                 </div>
