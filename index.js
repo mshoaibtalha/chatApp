@@ -17,7 +17,7 @@ function changeSendIcon(control){
     }
     else{
         document.getElementById('audio').removeAttribute('style');
-        document.getElementById('send').setAttribute('style','display:none');
+        document.getElementById('send').setAttribute('style' , 'display:none');
     }
 }
 ////////////////////
@@ -553,7 +553,7 @@ function onStatChanged(user) {
         document.getElementById('lnkSignOut').style = 'display:block';
                 }
 
-            const messaging = firebase.messaging();
+          const messaging = firebase.messaging();
             messaging.requestPermission().then(function(){
                 return messaging.getToken();
             }).then(function(token){
